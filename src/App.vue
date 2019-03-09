@@ -9,15 +9,15 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height>
-        <v-layout justify-center>
-          <v-flex class="wrapper">
+      <v-container fluid>
+        <v-layout row wrap>
+          <v-flex px-1 mb-2 sx12 md6>
             <grammar></grammar>
           </v-flex>
-          <v-flex class="wrapper">
+          <v-flex px-1 mb-2 sx12 md6>
             <g-input></g-input>
           </v-flex>
-          <v-flex class="wrapper">
+          <v-flex sx12>
             <tree></tree>
           </v-flex>
         </v-layout>

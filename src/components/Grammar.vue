@@ -1,5 +1,5 @@
 <template>
-  <v-card min-height="50%">
+  <v-card height="100%">
     <v-card-title>Context free Grammar</v-card-title>
     <v-alert
       mx-3
@@ -11,10 +11,22 @@
     <template v-for="(input, i) in inputs">
       <v-layout :key="i">
         <v-flex px-3 xs5>
-          <v-text-field outline v-model="inputs[i].key" label="Key" required></v-text-field>
+          <v-text-field
+            @input="generatable = true"
+            outline
+            v-model="inputs[i].key"
+            label="Key"
+            required
+          ></v-text-field>
         </v-flex>
         <v-flex px-3 xs5>
-          <v-text-field outline v-model="inputs[i].value" label="value" required></v-text-field>
+          <v-text-field
+            @input="generatable = true"
+            outline
+            v-model="inputs[i].value"
+            label="value"
+            required
+          ></v-text-field>
         </v-flex>
         <v-tooltip top>
           <template v-slot:activator="{ on }">
@@ -164,6 +176,7 @@ export default {
         { key: 'Noun', value: 'dog | cat | bird | squirrel' },
         { key: 'Verb', value: 'befriended | loved | ate | attacked' },
       ]
+      this.generatable = true
     },
     example2() {
       this.inputs = [
@@ -173,8 +186,10 @@ export default {
         { key: 'HappyFace', value: '^ Mouth ^' },
         { key: 'ZenFace', value: '- Mouth -' },
         { key: 'SleepyFace', value: '* Mouth *' },
-        { key: 'Mouth', value: '_ | _ Mouth | ~~' },
+        { key: 'Mouth', value: '_ | _ Mouth' },
+        { key: 'Arm', value: '~~' },
       ]
+      this.generatable = true
     },
   },
   computed: {},
