@@ -24,6 +24,15 @@
       </v-container>
     </v-content>
     <v-footer app fixed>
+      <v-btn flat icon href="https://t.me/bafatah" target="_Blank_">
+        <v-icon>mdi-telegram</v-icon>
+      </v-btn>
+      <v-btn flat icon href="https://twitter.com/gimyboya" target="_Blank_">
+        <v-icon>mdi-twitter</v-icon>
+      </v-btn>
+      <v-btn flat icon href="https://github.com/gimyboya" target="_Blank_">
+        <v-icon>mdi-github-circle</v-icon>
+      </v-btn>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
