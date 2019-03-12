@@ -59,3 +59,7 @@ yarn run test:unit
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+# Credits
+
+This website was built using [this library](https://github.com/jrleszcz/grammar-graph) made by [@jrleszcz](https://github.com/jrleszcz)

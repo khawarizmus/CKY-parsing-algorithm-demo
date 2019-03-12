@@ -4,7 +4,21 @@
       <v-toolbar-side-icon></v-toolbar-side-icon>
       <v-toolbar-title>Context Freedom</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn flat @click="dark = !dark">
+      <v-tooltip v-if="!computedCompleetness" bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            flat
+            icon
+            v-on="on"
+            href="https://github.com/gimyboya/context-freedom/issues/new/choose"
+            target="_Blank_"
+          >
+            <v-icon>mdi-fire</v-icon>
+          </v-btn>
+        </template>
+        <span>Found a bug or got a hot idea?</span>
+      </v-tooltip>
+      <v-btn flat icon @click="dark = !dark">
         <v-icon>mdi-compare</v-icon>
       </v-btn>
     </v-toolbar>
@@ -30,7 +44,7 @@
       <v-btn flat icon href="https://twitter.com/gimyboya" target="_Blank_">
         <v-icon>mdi-twitter</v-icon>
       </v-btn>
-      <v-btn flat icon href="https://github.com/gimyboya" target="_Blank_">
+      <v-btn flat icon href="https://github.com/gimyboya/context-freedom" target="_Blank_">
         <v-icon>mdi-github-circle</v-icon>
       </v-btn>
       <span>&copy; {{ new Date().getFullYear() }}</span>
