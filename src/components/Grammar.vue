@@ -26,7 +26,26 @@
             v-model="inputs[i].value"
             label="value"
             required
-          ></v-text-field>
+          >
+            <template v-slot:append>
+              <v-menu offset-y>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon v-on="on">
+                    <v-icon>mdi-plus-box-outline</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-tile
+                    v-for="(symbole, index) in symboles"
+                    :key="index"
+                    @click="copy(symbole, i)"
+                  >
+                    <v-list-tile-title>{{ symbole }}</v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
+            </template>
+          </v-text-field>
         </v-flex>
         <v-tooltip top>
           <template v-slot:activator="{ on }">
@@ -97,6 +116,7 @@ export default {
       error: false,
       generatable: true,
       errorContent: '',
+      symboles: ['λ'],
       inputs: [
         {
           key: '',
@@ -144,6 +164,9 @@ export default {
         },
       ]
       EventBus.$emit('grammar off')
+    },
+    copy(symbole, i) {
+      this.inputs[i].value = `${this.inputs[i].value} ${symbole}`
     },
     generateRules() {
       this.grammar.rules = {}

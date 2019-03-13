@@ -8,6 +8,13 @@
       dismissible
       type="success"
     >Context free grammar generated successfully</v-alert>
+    <v-alert
+      mx-3
+      :value="error"
+      transition="scale-transition"
+      dismissible
+      type="error"
+    >{{ errorMessage }}</v-alert>
     <div class="mx-3">
       <div class="mx-1">Next suggestions:</div>
       <template v-for="(item, i) in suggestions">
@@ -16,7 +23,6 @@
     </div>
     <v-card-text>
       <v-textarea
-        :error="error"
         outline
         name="input"
         :disabled="!generated"
@@ -67,6 +73,7 @@ export default {
       input: '',
       inputSiz: 0,
       error: false,
+      errorMessage: '',
       suggestions: [],
     }
   },
@@ -75,14 +82,19 @@ export default {
     EventBus.$on('grammar on', () => {
       console.log('catchin...')
       that.input = ''
-      that.graph = new GrammarGraph(that.$store.getters.getGrammarRules.rules)
-      that.recognizer = that.graph.createRecognizer(
-        that.$store.getters.getGrammarRules.startSymbole
-      )
-      that.guide = that.graph.createGuide(
-        that.$store.getters.getGrammarRules.startSymbole
-      )
-      that.suggestions = this.guide.choices()
+      try {
+        that.graph = new GrammarGraph(that.$store.getters.getGrammarRules.rules)
+        that.recognizer = that.graph.createRecognizer(
+          that.$store.getters.getGrammarRules.startSymbole
+        )
+        that.guide = that.graph.createGuide(
+          that.$store.getters.getGrammarRules.startSymbole
+        )
+        that.suggestions = this.guide.choices()
+      } catch (e) {
+        that.error = true
+        that.errorMessage = e.message
+      }
       that.generated = true
     })
     EventBus.$emit('grammar off', () => {
