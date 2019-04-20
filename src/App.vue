@@ -4,7 +4,7 @@
       <v-toolbar-side-icon></v-toolbar-side-icon>
       <v-toolbar-title>Context Freedom</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-tooltip v-if="!computedCompleetness" bottom>
+      <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn
             flat
@@ -29,10 +29,10 @@
             <grammar></grammar>
           </v-flex>
           <v-flex px-1 mb-2 sx12 md6>
-            <g-input></g-input>
+            <sentence></sentence>
           </v-flex>
           <v-flex sx12>
-            <tree></tree>
+            <triangle></triangle>
           </v-flex>
         </v-layout>
       </v-container>
@@ -54,15 +54,15 @@
 
 <script>
 import Grammar from '@/components/Grammar'
-import Input from '@/components/Input'
-import Tree from '@/components/Tree'
+import Sentence from '@/components/Sentences'
+import Triangle from '@/components/Triangle'
 
 export default {
   name: 'App',
   components: {
     Grammar,
-    Tree,
-    'g-input': Input,
+    Triangle,
+    Sentence: Sentence,
   },
   data() {
     return {

@@ -1,221 +1,197 @@
 <template>
   <v-card height="100%">
-    <v-card-title>Context free Grammar</v-card-title>
-    <v-alert
-      mx-3
-      :value="error"
-      transition="scale-transition"
-      dismissible
-      type="error"
-    >{{ errorContent }}</v-alert>
-    <template v-for="(input, i) in inputs">
-      <v-layout :key="i">
-        <v-flex px-3 xs5>
-          <v-text-field
-            @input="generatable = true"
-            outline
-            v-model="inputs[i].key"
-            label="Key"
-            required
-          ></v-text-field>
-        </v-flex>
-        <v-flex px-3 xs5>
-          <v-text-field
-            @input="generatable = true"
-            outline
-            v-model="inputs[i].value"
-            label="value"
-            required
-          >
-            <template v-slot:append>
-              <v-menu offset-y>
-                <template v-slot:activator="{ on }">
-                  <v-btn flat icon v-on="on">
-                    <v-icon>mdi-plus-box-outline</v-icon>
-                  </v-btn>
-                </template>
-                <v-list>
-                  <v-list-tile
-                    v-for="(symbole, index) in symboles"
-                    :key="index"
-                    @click="copy(symbole, i)"
-                  >
-                    <v-list-tile-title>{{ symbole }}</v-list-tile-title>
-                  </v-list-tile>
-                </v-list>
-              </v-menu>
-            </template>
-          </v-text-field>
-        </v-flex>
-        <v-tooltip top>
-          <template v-slot:activator="{ on }">
-            <v-btn @click="deletInput(input, i)" v-on="on" color="error">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </template>
-          <span>Delete this rule</span>
-        </v-tooltip>
-      </v-layout>
-    </template>
-    <v-card-actions>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-btn @click="addInput" v-on="on">Add a rule</v-btn>
-        </template>
-        <span>Add a new rule</span>
-      </v-tooltip>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            class="mx-2"
-            @click="generateRules()"
-            :disabled="!generatable"
-            color="success"
-            v-on="on"
-          >Generate Rules</v-btn>
-        </template>
-        <span>Generate your context free grammar rules</span>
-      </v-tooltip>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-btn @click="clear" color="error" v-on="on">
-            <v-icon>mdi-delete-empty</v-icon>
-          </v-btn>
-        </template>
-        <span>Clear all rules</span>
-      </v-tooltip>
-      <v-spacer></v-spacer>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-btn class="mx-2" @click="example1" color="info" v-on="on">Example 1</v-btn>
-        </template>
-        <span>Generate Rules</span>
-      </v-tooltip>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-btn @click="example2" color="info" v-on="on">Example 2</v-btn>
-        </template>
-        <span>Generate Rules</span>
-      </v-tooltip>
-    </v-card-actions>
+    <v-card-title>Grammar</v-card-title>
+    <v-card-text>
+      <v-textarea outline label="Grammar Rules" height="245" v-model="input"></v-textarea>
+    </v-card-text>
   </v-card>
 </template>
 
 <script>
 import _ from 'lodash'
 import { EventBus } from '../evenBus.js'
-import { error } from 'util'
 
 export default {
   data() {
     return {
-      grammar: {
-        rules: {},
-        startSymbole: '',
-      },
+      input: '',
+      startSymbole: '',
       error: false,
-      generatable: true,
-      errorContent: '',
-      symboles: ['λ'],
-      inputs: [
-        {
-          key: '',
-          value: '',
-        },
-      ],
+      errorLog: '',
+      rules: [],
+      tokenized: [],
+      terminals: {},
+      noneTerminals: {},
+      parsed: [[]],
     }
   },
   mounted() {
-    // const GRAPH = new GrammarGraph(this.grammarRules)
-  },
-  watch: {
-    error() {
-      if (this.error) {
-        this.generatable = false
-      }
-    },
-    inputs(newInput, oldInput) {
-      if (oldInput === newInput) {
-        this.generatable = true
-      }
-    },
+    const that = this
+    this.input =
+      'S -> NP VP\nS -> Verb NP\nS -> X2 PP\nS -> Verb PP\nS -> VP PP\nS -> was\nS -> gave\nS -> gives\nS -> told\nS -> slowly\nS -> found\nS -> thought\nS -> ordered\nNP -> There\nNP -> It\nNP -> big\nNP -> cheap\nNP -> goods\nNP -> He\nNP -> the\nNP -> her\nNP -> timely\nNP -> expensive\nNP -> children\nNP -> FedEx\nNP -> heavy\nNP -> Det Nominal\nNominal -> Nominal Noun\nNominal -> Nominal PP\nNominal -> beautiful\nNominal -> feasible\nNominal -> parcel\nNominal -> weight\nNominal -> far\nNominal -> location\nNominal -> little\nNominal -> belonged\nNominal -> envelope\nNominal -> important\nNominal -> warehouse\nVP -> was\nVP -> gave\nVP -> gives\nVP -> told\nVP -> slowly\nVP -> found\nVP -> thought\nVP -> ordered\nVP -> Verb NP\nVP -> X2 PP\nX2 -> Verb NP\nVP -> Verb PP\nVP -> VP PP\nPP -> Preposition NP\nVerb -> was\nVerb -> gave\nVerb -> gives\nVerb -> told\nVerb -> slowly\nVerb -> found\nVerb -> thought\nVerb -> ordered\nDet -> a\nDet -> The\nDet -> the\nDet -> her\nDet -> send\nDet -> reached\nDet -> seven\nDet -> they\nNoun -> document\nNoun -> discount\nNoun -> away\nNoun -> beds\nNoun -> beautiful\nNoun -> feasible\nNoun -> parcel\nNoun -> weight\nNoun -> far\nNoun -> location\nNoun -> little\nNoun -> belonged\nNoun -> envelope\nNoun -> important\nNoun -> warehouse\nPreposition -> named\nPreposition -> and\nPreposition -> in\nPreposition -> into\nPreposition -> to\nPreposition -> send'
+    EventBus.$on('parse', (s) => {
+      that.parser(s)
+    })
+    EventBus.$on('reset', () => {
+      that.startSymbole = ''
+      that.error = false
+      that.errorLog = ''
+      that.rules = []
+      that.tokenized = []
+      that.terminals = {}
+      that.noneTerminals = {}
+      that.parsed = [[]]
+    })
   },
   methods: {
-    addInput() {
-      this.error = false
-      this.inputs.push({ key: '', value: '' })
-    },
-    deletInput(input, i) {
-      if (this.inputs.length > 1) {
-        this.error = false
-        this.inputs.splice(i, 1)
-      } else {
-        this.errorContent = 'you need to have at least one rule'
-        this.error = true
-      }
-    },
-    clear() {
-      this.error = false
-      this.generatable = true
-      this.inputs = [
-        {
-          key: '',
-          value: '',
-        },
-      ]
-      EventBus.$emit('grammar off')
-    },
-    copy(symbole, i) {
-      this.inputs[i].value = `${this.inputs[i].value} ${symbole}`
-    },
-    generateRules() {
-      this.grammar.rules = {}
-      this.$store.commit('SET_GRAMMAR_RULES', {})
-      this.inputs.forEach((rule, i) => {
-        if (rule.key === '') {
-          this.errorContent = "You can't have an empty key"
+    parser(sentence) {
+      // tokenize the sentence
+      this.tokenized = this.tokenize(sentence)
+      // we create a matrix that holds the solution
+      this.initializeMatrix(this.tokenized.length)
+      // we save each line from the input as a rule
+      this.rules = this.input.split('\n')
+      // this regex is to extract each symbole individually
+      const rex = /^(\w+)\s*->\s*(\w+)(?:\s+(\w+))?\s*\.?$/
+      // we iterate on each rule
+      for (const [i, rule] of this.rules.entries()) {
+        // if the line is empty
+        if (rule.length === 0) continue
+        // check the rule syntax
+        const check = rex.exec(rule)
+        if (check === null) {
           this.error = true
-        } else {
-          if (i === 0) {
-            this.grammar.startSymbole = rule.key
-          }
-          this.grammar.rules[rule.key] = _.words(rule.value, /[^\|]+/g).map(
-            (token) => _.trim(token)
-          )
+          this.errorLog = `Syntax error rule not following 'Symbole -> Symbole', line ${i}, rule ${rule}`
+          break
         }
-      })
-      if (!this.error) {
-        this.$store.commit('SET_GRAMMAR_RULES', this.grammar)
-        EventBus.$emit('grammar on')
-        this.generatable = false
+        // extract the left-hand-side and right-hand-side of each rule
+        let lhs, rhs
+        ;[lhs, rhs] = _.map(rule.split('->'), _.trim)
+        // create an object for representing all the rules
+        if (rhs.split(' ').length === 1) {
+          // trminal symbole
+          if (_.has(this.terminals, lhs)) {
+            this.terminals[lhs].push(rhs)
+          } else {
+            this.terminals[lhs] = [rhs]
+          }
+        } else if (rhs.split(' ').length === 2) {
+          // none-terminal symbole
+          if (_.has(this.noneTerminals, lhs)) {
+            this.noneTerminals[lhs].push(rhs)
+          } else {
+            this.noneTerminals[lhs] = [rhs]
+          }
+        } else {
+          // not chomsky normal form
+          this.error = true
+          this.errorLog = `your rules are not in CNF, line ${i}, rule ${rule}`
+          break
+        }
+        if (i === 0) {
+          // getting the start symbole
+          this.startSymbole = lhs
+        }
+      }
+      // at this point we are ready to excute the CYK algorithm
+      this.cykParser()
+    },
+    tokenize(s) {
+      return _.trim(s).split(' ')
+    },
+    initializeMatrix(len) {
+      this.parsed = new Array(len)
+      for (var i = 0; i < this.parsed.length; i++) {
+        this.parsed[i] = new Array(len)
       }
     },
-    example1() {
-      this.inputs = [
-        { key: 'Sentence', value: 'NounPhrase VerbPhrase' },
-        { key: 'NounPhrase', value: 'the Noun | the Noun RelativeClause' },
-        { key: 'VerbPhrase', value: 'Verb | Verb NounPhrase' },
-        { key: 'RelativeClause', value: 'that VerbPhrase' },
-        { key: 'Noun', value: 'dog | cat | bird | squirrel' },
-        { key: 'Verb', value: 'befriended | loved | ate | attacked' },
-      ]
-      this.generatable = true
-    },
-    example2() {
-      this.inputs = [
-        { key: 'Creature', value: 'Arm Head Arm' },
-        { key: 'Head', value: '( Face )' },
-        { key: 'Face', value: 'HappyFace | ZenFace | SleepyFace' },
-        { key: 'HappyFace', value: '^ Mouth ^' },
-        { key: 'ZenFace', value: '- Mouth -' },
-        { key: 'SleepyFace', value: '* Mouth *' },
-        { key: 'Mouth', value: '_ | _ Mouth' },
-        { key: 'Arm', value: '~~' },
-      ]
-      this.generatable = true
+    cykParser() {
+      for (let i = this.tokenized.length - 1; i >= 0; i--) {
+        for (let j = 0; j < i + 1; j++) {
+          if (i === this.tokenized.length - 1) {
+            // terminal symbole matching
+            for (const key in this.terminals) {
+              for (const T of this.terminals[key]) {
+                if (T === this.tokenized[j]) {
+                  // the token matches the sentence word
+                  // we save the solution to the matrix
+                  if (this.parsed[i][j]) {
+                    this.parsed[i][j].push(key)
+                  } else {
+                    this.parsed[i][j] = [key]
+                  }
+                }
+              }
+            }
+            // we update the UI
+            if (this.parsed[i][j] === undefined) {
+              // no match
+              this.parsed[i][j] = ['∅']
+            }
+            document.querySelector(
+              `#card${i}${j} > .v-card__text`
+            ).innerHTML = this.parsed[i][j]
+          } else {
+            // none terminal symbole matching
+            let count1 = this.tokenized.length - 1 - i
+            let count2 = 1
+            // let negrativeLen = this.tokenized.length - (i + 2)
+            for (let k = i + 1; k <= this.tokenized.length - 1; k++) {
+              console.log({ i }, { j }, { k })
+              // we prepare for what we want to search
+              for (const m in this.parsed[i + count1][j]) {
+                for (const n in this.parsed[k][j + count2]) {
+                  console.log({ count1 }, { count2 })
+                  const searchSymbole = `${this.parsed[i + count1][j][m]} ${
+                    this.parsed[k][j + count2][n]
+                  }`
+                  console.log('searching for', searchSymbole)
+                  console.log(
+                    `[${i}][${j}]`,
+                    document.getElementById(`card${i}${j}`)
+                  )
+                  console.log(document.getElementById(`card${i + count1}${j}`))
+                  console.log(document.getElementById(`card${k}${j + count2}`))
+                  // we loop over all noneterminal symboles
+                  for (const key in this.noneTerminals) {
+                    // we get all their possible rules
+                    for (const noneterminalSymboles of this.noneTerminals[
+                      key
+                    ]) {
+                      // if that rule matches with the rule we are looking for we save
+                      if (noneterminalSymboles === searchSymbole) {
+                        // saving to the solution matrix
+                        if (this.parsed[i][j]) {
+                          // if the array do exist
+                          if (!this.parsed[i][j].includes(key)) {
+                            // if the array don't contain the current value
+                            this.parsed[i][j].push(key)
+                          }
+                        } else {
+                          this.parsed[i][j] = [key]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              count1--
+              count2++
+            }
+            if (this.parsed[i][j] === undefined) {
+              // no match
+              this.parsed[i][j] = ['∅']
+            }
+            document.querySelector(
+              `#card${i}${j} > .v-card__text`
+            ).innerHTML = this.parsed[i][j]
+          }
+        }
+      }
     },
   },
   computed: {},
+  watch: {},
 }
 </script>
 
