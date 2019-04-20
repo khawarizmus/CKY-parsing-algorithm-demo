@@ -10,7 +10,7 @@
             flat
             icon
             v-on="on"
-            href="https://github.com/gimyboya/context-freedom/issues/new/choose"
+            href="https://github.com/gimyboya/CKY-parsing-algorithm-demo/issues/new/choose"
             target="_Blank_"
           >
             <v-icon>mdi-fire</v-icon>
@@ -44,7 +44,12 @@
       <v-btn flat icon href="https://twitter.com/gimyboya" target="_Blank_">
         <v-icon>mdi-twitter</v-icon>
       </v-btn>
-      <v-btn flat icon href="https://github.com/gimyboya/context-freedom" target="_Blank_">
+      <v-btn
+        flat
+        icon
+        href="https://github.com/gimyboya/CKY-parsing-algorithm-demo"
+        target="_Blank_"
+      >
         <v-icon>mdi-github-circle</v-icon>
       </v-btn>
       <span>&copy; {{ new Date().getFullYear() }}</span>

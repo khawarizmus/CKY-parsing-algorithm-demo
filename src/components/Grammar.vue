@@ -23,6 +23,7 @@ export default {
       terminals: {},
       noneTerminals: {},
       parsed: [[]],
+      solved: false,
     }
   },
   mounted() {
@@ -41,10 +42,12 @@ export default {
       that.terminals = {}
       that.noneTerminals = {}
       that.parsed = [[]]
+      that.solved = false
     })
   },
   methods: {
     parser(sentence) {
+      const that = this
       // tokenize the sentence
       this.tokenized = this.tokenize(sentence)
       // we create a matrix that holds the solution
@@ -95,6 +98,13 @@ export default {
       }
       // at this point we are ready to excute the CYK algorithm
       this.cykParser()
+      // we can finally check if the sentence is dirivable from that grammar
+      this.parsed[0][0].forEach((symbole) => {
+        if (symbole === that.startSymbole) {
+          that.solved = true
+        }
+      })
+      EventBus.$emit('solution', this.solved)
     },
     tokenize(s) {
       return _.trim(s).split(' ')

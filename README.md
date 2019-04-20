@@ -1,14 +1,22 @@
-# Context Freedom
+# CKY parsing algorithm
 
-This is a playground for you to make or test your context free grammar rules
+Demo can be found [here](https://cyk.netlify.com)
 
-# How to use
+This demo shows how a CYK algorithm works
 
-You can add as many rules as you want in the `context free grammar section` your rules are in the form of key value pairs, if a rule has many symbols you can separate them by `|`.
+# How Does it work
 
-you can generate an example by clocking on the examples button. once you have defined your grammar click on `generate rules` button.
+There two inputs on the web application:
 
-Now you can test your rules on the input side
+- Grammar input: this is pre-filed with a default context free grammar in Chomsky Normal Form Grammar(CNFG).
+- Sentence input: this is where you try sentence against your context free grammar, we provided few examples of valid and invalid sentences against the default context free grammar.
+- The CFG used in the project is described in the section below. Any other CFG can also be used.
+- Conversion of CFG to CNFG is done manually. The program **recognizes and accepts only CNFG** and not CFG directly.
+
+# TODO
+
+- [ ] Skipp empty cells for a better performance
+- [ ] Add controlled animation to show how the algorithm work step by step
 
 # Developers
 
@@ -62,4 +70,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 # Credits
 
-This website was built using [this library](https://github.com/jrleszcz/grammar-graph) made by [@jrleszcz](https://github.com/jrleszcz)
+The CNFG along with the example sentences where taken from this [repo](https://github.com/abhijeetchopra/CKY-Parser) made by [@abhijeetchopra](abhijeetchopra)

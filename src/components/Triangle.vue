@@ -2,9 +2,17 @@
   <v-card height="100%">
     <v-card-title>Result</v-card-title>
     <v-card-text>
-      <v-text-field label="Sentence" placeholder="Enter a sentence" outline v-model="sentence"></v-text-field>
-      <v-btn :disabled="disabled" type="success" @click="parse">Parse</v-btn>
-      <v-btn :disabled="!disabled" type="error" @click="reset">Reset</v-btn>
+      <v-layout row wrap>
+        <v-flex px-1 mb-2 sx12 md6>
+          <v-text-field label="Sentence" placeholder="Enter a sentence" outline v-model="sentence"></v-text-field>
+          <v-btn :disabled="disabled" type="success" @click="parse">Parse</v-btn>
+          <v-btn :disabled="!disabled" type="error" @click="reset">Reset</v-btn>
+        </v-flex>
+        <v-flex px-1 mb-2 sx12 md6>
+          <v-alert v-model="success" type="success" dismissible>The sentence can be derived</v-alert>
+          <v-alert v-model="error" type="error" dismissible>The sentence can't be derived</v-alert>
+        </v-flex>
+      </v-layout>
     </v-card-text>
     <v-container
       v-if="tokenize[0] != ''"
@@ -42,7 +50,19 @@ export default {
     return {
       sentence: '',
       disabled: false,
+      success: false,
+      error: false,
     }
+  },
+  mounted() {
+    const that = this
+    EventBus.$on('solution', (b) => {
+      if (b) {
+        that.success = true
+      } else {
+        that.error = true
+      }
+    })
   },
   methods: {
     parse() {
@@ -53,6 +73,8 @@ export default {
       EventBus.$emit('reset')
       this.sentence = ''
       this.disabled = false
+      this.success = false
+      this.error = false
     },
   },
   computed: {
