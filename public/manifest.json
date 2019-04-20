@@ -1,6 +1,6 @@
 {
-  "name": "interpreter",
-  "short_name": "interpreter",
+  "name": "cyk-parser",
+  "short_name": "cyk",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

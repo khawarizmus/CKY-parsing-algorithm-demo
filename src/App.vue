@@ -2,7 +2,7 @@
   <v-app id="inspire" :dark="dark">
     <v-toolbar app fixed clipped-left>
       <v-toolbar-side-icon></v-toolbar-side-icon>
-      <v-toolbar-title>Context Freedom</v-toolbar-title>
+      <v-toolbar-title>CYK Parser</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
